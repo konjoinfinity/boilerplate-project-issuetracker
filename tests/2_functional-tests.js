@@ -33,7 +33,7 @@ suite('Functional Tests', function() {
 
 });
 
-//       Create an issue with every field: POST request to /api/issues/{project}
+//       Create an issue with every field: POST request to /api/issues/{project}✅
 //       Create an issue with only required fields: POST request to /api/issues/{project}
 //       Create an issue with missing required fields: POST request to /api/issues/{project}
 //       View issues on a project: GET request to /api/issues/{project}
