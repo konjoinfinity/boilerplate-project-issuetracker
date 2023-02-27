@@ -1,13 +1,10 @@
-'use strict';
+"use strict";
+const mongoose = require("mongoose");
+const IssueModel = require("../models").Issue;
+const ProjectModel = require("../models").Project;
+const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = function (app) {
-
-  // <form id="testForm" class="border">
-  //       <input type="text" name="issue_title" placeholder="*Title" style="width: 100px" required=''><br>
-  //       <textarea type="text" name="issue_text" placeholder="*Text" style="width: 100px" required=''></textarea><br>
-  //       <input type="text" name="created_by" placeholder="*Created by" style="width: 100px" required=''><br>
-  //       <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px"><br>
-  //       <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px"><br></br>
 
   app.route('/api/issues/:project')
   
@@ -17,34 +14,42 @@ module.exports = function (app) {
     
     .post(function (req, res){
       let project = req.params.project;
-      
-      let title = req.query.issue_title;
-      let text = req.query.issue_text;
-      let author = req.query.created_by;
-      let assigned = req.query.assigned_to;
-      let status = req.query.status_text;
-      // if (!initNum && !initUnit) {
-      //   res.send("invalid number and unit");
-      //   return;
-      // } else if (!initNum) {
-      //   res.send("invalid number");
-      //   return;
-      // } else if (!initUnit) {
-      //   res.send("invalid unit");
-      //   return;
-      // }
-      // let returnNum = convertHandler.convert(initNum, initUnit);
-      // let returnUnit = convertHandler.getReturnUnit(initUnit);
-      // let toString = convertHandler.getString(
-      //   initNum,
-      //   initUnit,
-      //   returnNum,
-      //   returnUnit
-      // );
-  
-      // res.json({ initNum, initUnit, returnNum, returnUnit, string: toString });
-
-
+      if (!req.body.issue_title || !req.body.issue_text || !req.body.created_by) {
+        res.json({ error: "required field(s) missing" });
+        return;
+      }
+      const newIssue = new IssueModel({
+        issue_title: req.body.issue_title || "",
+        issue_text: req.body.issue_text || "",
+        created_on: new Date(),
+        updated_on: new Date(),
+        created_by: req.body.created_by || "",
+        assigned_to: req.body.assigned_to || "",
+        open: true,
+        status_text: req.body.status_text || "",
+      });
+      ProjectModel.findOne({ name: project }, (err, projectdata) => {
+        if (!projectdata) {
+          const newProject = new ProjectModel({ name: project });
+          newProject.issues.push(newIssue);
+          newProject.save((err, data) => {
+            if (err || !data) {
+              res.send("There was an error saving in post");
+            } else {
+              res.json(newIssue);
+            }
+          });
+        } else {
+          projectdata.issues.push(newIssue);
+          projectdata.save((err, data) => {
+            if (err || !data) {
+              res.send("There was an error saving in post");
+            } else {
+              res.json(newIssue);
+            }
+          });
+        }
+      });
     })
     
     .put(function (req, res){
