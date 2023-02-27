@@ -102,14 +102,20 @@ module.exports = function (app) {
     .delete(function (req, res){
       let project = req.params.project;
       console.log(req.body._id)
-      ProjectModel.findOneAndUpdate(
-        { name: project },
-        { $pull: { issues: { _id: req.body._id } } }
-      ).then(issue => {
+      console.log(String(req.body._id).length)
+      if(String(req.body._id).length == 24) {
+      ProjectModel.findOneAndUpdate({ name: project },{ $pull: { issues: { _id: req.body._id } } })
+       .then((issue, err) => {
+        if (err) {
+          res.json({ error: 'could not delete', '_id': req.body._id })
+        } else {
         issue.save((err, deleted) => {
-          res.json({ result: 'successfully deleted', '_id': req.body._id });
+            res.json({ result: 'successfully deleted', '_id': req.body._id });
         });
+      }
       });
+    } else {
+      res.json({ error: 'missing _id' })
+    }
     });
-    
 };

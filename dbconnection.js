@@ -9,7 +9,7 @@ if (process.env.NODE_ENV == "production") {
   }, function(err) {
     if (err) {
         throw err;
-    } else {console.log("Production Database Connection Successful");}
+    } else {console.log("Production Database Connection Successful")}
     })
 } else {
   db = mongoose.connect("mongodb://localhost/issuetracker", {

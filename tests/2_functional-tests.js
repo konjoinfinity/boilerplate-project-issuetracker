@@ -4,6 +4,8 @@ const assert = chai.assert;
 const server = require('../server');
 chai.use(chaiHttp);
 
+let toDelete;
+
 suite('Functional Tests', function() {
   
     suite('POST (create) request at /api/issues/apitest to create with all fields filled', () => {
@@ -12,20 +14,21 @@ suite('Functional Tests', function() {
             .request(server)
             .get('/api/issues/apitest')
             .send({
-                issue_title: 'First title',
-                issue_text: 'First text',
-                created_by: 'First author',
-                assigned_to: 'First person',
-                status_text: 'First status',
+                issue_title: 'title',
+                issue_text: 'text',
+                created_by: 'author',
+                assigned_to: 'person',
+                status_text: 'status',
             })
             .end((err, res) => {
               assert.equal(res.status, 200);
-              assert.equal(res.body.issue_title, 'First title');
-              assert.equal(res.body.issue_text, 'First text');
-              assert.equal(res.body.created_by, 'First author');
-              assert.equal(res.body.assigned_to, 'First person');
+              assert.equal(res.body.issue_title, 'title');
+              assert.equal(res.body.issue_text, 'text');
+              assert.equal(res.body.created_by, 'author');
+              assert.equal(res.body.assigned_to, 'person');
               assert.equal(res.body.open, true);
-              assert.equal(res.body.status_text, 'First status');
+              assert.equal(res.body.status_text, 'status');
+            
             });
             done();
           })
@@ -64,7 +67,7 @@ suite('Functional Tests', function() {
             })
             .end((err, res) => {
               assert.equal(res.status, 200);
-              assert.equal(res.body, 'required field(s) missing');
+              assert.equal(res.body, { error: "required field(s) missing" });
             });
             done();
           })
@@ -104,6 +107,39 @@ suite('Functional Tests', function() {
             .end((err, res) => {
               assert.equal(res.status, 200);
               assert.equal(res.body.length, 1);
+              toDelete = res.body._id;
+            });
+            done();
+          })
+      })
+
+      suite('DELETE (delete) request at /api/issues/apitest for specified _id', () => {
+        test('(Valid) should return json for successful deletion',(done) => {
+          chai
+            .request(server)
+            .get('/api/issues/apitest')
+            .send({
+                _id: toDelete,
+              })
+            .end((err, res) => {
+              assert.equal(res.status, 200);
+              assert.equal(res.body, { result: 'successfully deleted', '_id': _id });
+            });
+            done();
+          })
+      })
+
+      suite('DELETE (delete) request at /api/issues/apitest with a missing _id', () => {
+        test('(Valid) should return an err for missing id',(done) => {
+          chai
+            .request(server)
+            .get('/api/issues/apitest')
+            .send({
+                _id: 'notanid',
+              })
+            .end((err, res) => {
+              assert.equal(res.status, 200);
+              assert.equal(res.body, { error: 'missing _id' });
             });
             done();
           })
@@ -122,6 +158,6 @@ suite('Functional Tests', function() {
 //       Update an issue with missing _id: PUT request to /api/issues/{project}
 //       Update an issue with no fields to update: PUT request to /api/issues/{project}
 //       Update an issue with an invalid _id: PUT request to /api/issues/{project}
-//       Delete an issue: DELETE request to /api/issues/{project}
+//       Delete an issue: DELETE request to /api/issues/{project}✅
 //       Delete an issue with an invalid _id: DELETE request to /api/issues/{project}
 //       Delete an issue with missing _id: DELETE request to /api/issues/{project}
