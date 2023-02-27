@@ -4,8 +4,6 @@ const assert = chai.assert;
 const server = require('../server');
 chai.use(chaiHttp);
 
-let toDelete;
-
 suite('Functional Tests', function() {
   
     suite('POST (create) request at /api/issues/apitest to create with all fields filled', () => {
@@ -40,15 +38,15 @@ suite('Functional Tests', function() {
             .request(server)
             .get('/api/issues/apitest')
             .send({
-                issue_title: 'Next title',
-                issue_text: 'Next text',
-                created_by: 'Next author'
+                issue_title: 'testtitle',
+                issue_text: 'testtext',
+                created_by: 'testby'
             })
             .end((err, res) => {
               assert.equal(res.status, 200);
-              assert.equal(res.body.issue_title, 'Next title');
-              assert.equal(res.body.issue_text, 'Next text');
-              assert.equal(res.body.created_by, 'Next author');
+              assert.equal(res.body.issue_title, 'testtitle');
+              assert.equal(res.body.issue_text, 'testtext');
+              assert.equal(res.body.created_by, 'testby');
               assert.equal(res.body.assigned_to, '');
               assert.equal(res.body.open, true);
               assert.equal(res.body.status_text, '');
@@ -63,11 +61,11 @@ suite('Functional Tests', function() {
             .request(server)
             .get('/api/issues/apitest')
             .send({
-                issue_title: 'Now title',
+                issue_title: 'Invalid',
             })
             .end((err, res) => {
               assert.equal(res.status, 200);
-              assert.equal(res.body, { error: "required field(s) missing" });
+              assert.equal(res.body, { error: 'required field(s) missing' });
             });
             done();
           })
@@ -90,7 +88,7 @@ suite('Functional Tests', function() {
         test('(Valid) should return array of issues that match query params',(done) => {
           chai
             .request(server)
-            .get('/api/issues/apitest?status_text=Yolo')
+            .get('/api/issues/apitest?status_text=title')
             .end((err, res) => {
               assert.equal(res.status, 200);
               assert.equal(res.body.length, 1);
@@ -103,11 +101,11 @@ suite('Functional Tests', function() {
         test('(Valid) should return array of issues that match multiple query params',(done) => {
           chai
             .request(server)
-            .get('/api/issues/apitest?issue_title=test&&issue_text=test')
+            .get('/api/issues/apitest?issue_title=title&&issue_text=text')
             .end((err, res) => {
               assert.equal(res.status, 200);
               assert.equal(res.body.length, 1);
-              toDelete = res.body._id;
+              
             });
             done();
           })
@@ -119,7 +117,7 @@ suite('Functional Tests', function() {
             .request(server)
             .get('/api/issues/apitest')
             .send({
-                _id: toDelete,
+                _id: '63fd234c6d68572ec9fb88b2',
               })
             .end((err, res) => {
               assert.equal(res.status, 200);
