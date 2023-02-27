@@ -96,14 +96,27 @@ suite('Functional Tests', function() {
           })
       })
 
+      suite('GET (read) request at /api/issues/apitest for multiple search queries', () => {
+        test('(Valid) should return array of issues that match multiple query params',(done) => {
+          chai
+            .request(server)
+            .get('/api/issues/apitest?issue_title=test&&issue_text=test')
+            .end((err, res) => {
+              assert.equal(res.status, 200);
+              assert.equal(res.body.length, 1);
+            });
+            done();
+          })
+      })
+
 });
 
 //       Create an issue with every field: POST request to /api/issues/{project}✅
 //       Create an issue with only required fields: POST request to /api/issues/{project}✅
 //       Create an issue with missing required fields: POST request to /api/issues/{project}✅
 //       View issues on a project: GET request to /api/issues/{project}✅
-//       View issues on a project with one filter: GET request to /api/issues/{project}
-//       View issues on a project with multiple filters: GET request to /api/issues/{project}
+//       View issues on a project with one filter: GET request to /api/issues/{project}✅
+//       View issues on a project with multiple filters: GET request to /api/issues/{project}✅
 //       Update one field on an issue: PUT request to /api/issues/{project}
 //       Update multiple fields on an issue: PUT request to /api/issues/{project}
 //       Update an issue with missing _id: PUT request to /api/issues/{project}

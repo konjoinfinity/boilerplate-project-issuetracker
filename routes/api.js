@@ -101,7 +101,15 @@ module.exports = function (app) {
     
     .delete(function (req, res){
       let project = req.params.project;
-      
+      console.log(req.body._id)
+      ProjectModel.findOneAndUpdate(
+        { name: project },
+        { $pull: { issues: { _id: req.body._id } } }
+      ).then(issue => {
+        issue.save((err, deleted) => {
+          res.json({ result: 'successfully deleted', '_id': req.body._id });
+        });
+      });
     });
     
 };
