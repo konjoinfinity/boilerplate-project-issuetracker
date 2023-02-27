@@ -11,7 +11,7 @@ suite('Functional Tests', function() {
           chai
             .request(server)
             .get('/api/issues/apitest')
-            .query({ 
+            .send({
                 issue_title: 'Issue title',
                 issue_text: 'Issue text',
                 created_by: 'This author',
@@ -26,8 +26,8 @@ suite('Functional Tests', function() {
               assert.equal(res.body.assigned_to, 'That person');
               assert.equal(res.body.open, true);
               assert.equal(res.body.status_text, 'This is the status');
-              done();
             });
+            done();
           })
       })
 
