@@ -54,10 +54,26 @@ suite('Functional Tests', function() {
           })
       })
 
+      suite('POST (create) request at /api/issues/apitest with missing required fields', () => {
+        test('Missing required fields (Invalid) return error',(done) => {
+          chai
+            .request(server)
+            .get('/api/issues/apitest')
+            .send({
+                issue_title: 'Issue title',
+            })
+            .end((err, res) => {
+              assert.equal(res.status, 200);
+              assert.equal(res.body, 'required field(s) missing');
+            });
+            done();
+          })
+      })
+
 });
 
 //       Create an issue with every field: POST request to /api/issues/{project}✅
-//       Create an issue with only required fields: POST request to /api/issues/{project}
+//       Create an issue with only required fields: POST request to /api/issues/{project}✅
 //       Create an issue with missing required fields: POST request to /api/issues/{project}
 //       View issues on a project: GET request to /api/issues/{project}
 //       View issues on a project with one filter: GET request to /api/issues/{project}
