@@ -12,20 +12,20 @@ suite('Functional Tests', function() {
             .request(server)
             .get('/api/issues/apitest')
             .send({
-                issue_title: 'Issue title',
-                issue_text: 'Issue text',
-                created_by: 'This author',
-                assigned_to: 'That person',
-                status_text: 'This is the status',
+                issue_title: 'First title',
+                issue_text: 'First text',
+                created_by: 'First author',
+                assigned_to: 'First person',
+                status_text: 'First status',
             })
             .end((err, res) => {
               assert.equal(res.status, 200);
-              assert.equal(res.body.issue_title, 'Issue title');
-              assert.equal(res.body.issue_text, 'Issue text');
-              assert.equal(res.body.created_by, 'This author');
-              assert.equal(res.body.assigned_to, 'That person');
+              assert.equal(res.body.issue_title, 'First title');
+              assert.equal(res.body.issue_text, 'First text');
+              assert.equal(res.body.created_by, 'First author');
+              assert.equal(res.body.assigned_to, 'First person');
               assert.equal(res.body.open, true);
-              assert.equal(res.body.status_text, 'This is the status');
+              assert.equal(res.body.status_text, 'First status');
             });
             done();
           })
@@ -37,15 +37,15 @@ suite('Functional Tests', function() {
             .request(server)
             .get('/api/issues/apitest')
             .send({
-                issue_title: 'Issue title',
-                issue_text: 'Issue text',
-                created_by: 'This author'
+                issue_title: 'Next title',
+                issue_text: 'Next text',
+                created_by: 'Next author'
             })
             .end((err, res) => {
               assert.equal(res.status, 200);
-              assert.equal(res.body.issue_title, 'Issue title');
-              assert.equal(res.body.issue_text, 'Issue text');
-              assert.equal(res.body.created_by, 'This author');
+              assert.equal(res.body.issue_title, 'Next title');
+              assert.equal(res.body.issue_text, 'Next text');
+              assert.equal(res.body.created_by, 'Next author');
               assert.equal(res.body.assigned_to, '');
               assert.equal(res.body.open, true);
               assert.equal(res.body.status_text, '');
@@ -60,7 +60,7 @@ suite('Functional Tests', function() {
             .request(server)
             .get('/api/issues/apitest')
             .send({
-                issue_title: 'Issue title',
+                issue_title: 'Now title',
             })
             .end((err, res) => {
               assert.equal(res.status, 200);
@@ -83,12 +83,25 @@ suite('Functional Tests', function() {
           })
       })
 
+      suite('GET (read) request at /api/issues/apitest for single search query', () => {
+        test('(Valid) should return array of issues that match query params',(done) => {
+          chai
+            .request(server)
+            .get('/api/issues/apitest?status_text=Yolo')
+            .end((err, res) => {
+              assert.equal(res.status, 200);
+              assert.equal(res.body.length, 1);
+            });
+            done();
+          })
+      })
+
 });
 
 //       Create an issue with every field: POST request to /api/issues/{project}✅
 //       Create an issue with only required fields: POST request to /api/issues/{project}✅
 //       Create an issue with missing required fields: POST request to /api/issues/{project}✅
-//       View issues on a project: GET request to /api/issues/{project}
+//       View issues on a project: GET request to /api/issues/{project}✅
 //       View issues on a project with one filter: GET request to /api/issues/{project}
 //       View issues on a project with multiple filters: GET request to /api/issues/{project}
 //       Update one field on an issue: PUT request to /api/issues/{project}
