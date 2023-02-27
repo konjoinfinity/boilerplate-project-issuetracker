@@ -10,6 +10,8 @@ module.exports = function (app) {
   
     .get(function (req, res){
       let project = req.params.project;
+      ProjectModel.findOne({ name: project })
+                  .then(proj => res.json(proj.issues));
     })
     
     .post(function (req, res){

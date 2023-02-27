@@ -70,11 +70,24 @@ suite('Functional Tests', function() {
           })
       })
 
+      suite('GET (read) request at /api/issues/apitest for project list of issues', () => {
+        test('(Valid) should return array of issues for :project',(done) => {
+          chai
+            .request(server)
+            .get('/api/issues/apitest')
+            .end((err, res) => {
+              assert.equal(res.status, 200);
+              assert.equal(res.body.length, 6);
+            });
+            done();
+          })
+      })
+
 });
 
 //       Create an issue with every field: POST request to /api/issues/{project}✅
 //       Create an issue with only required fields: POST request to /api/issues/{project}✅
-//       Create an issue with missing required fields: POST request to /api/issues/{project}
+//       Create an issue with missing required fields: POST request to /api/issues/{project}✅
 //       View issues on a project: GET request to /api/issues/{project}
 //       View issues on a project with one filter: GET request to /api/issues/{project}
 //       View issues on a project with multiple filters: GET request to /api/issues/{project}
