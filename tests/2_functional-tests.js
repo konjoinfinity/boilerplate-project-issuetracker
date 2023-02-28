@@ -91,7 +91,7 @@ suite('Functional Tests', function() {
           test("View issues on a project with one filter: GET request to /api/issues/{project}", function (done) {
             chai
             .request(server)
-            .get('/api/issues/apitest?_id=63fd79b5e81ab019dcdf8bad')
+            .get('/api/issues/apitest?_id=63fd8b5800b8c65e226b50ad')
             .end((err, res) => {
               assert.equal(res.status, 200);
               assert.equal(res.body.length, 1);
@@ -121,13 +121,13 @@ suite("PUT Tests", function () {
         .request(server)
         .put("/api/issues/apitest")
         .send({
-          _id: "63fd79b5e81ab019dcdf8bad",
+          _id: "63fd8b5800b8c65e226b50ad",
           issue_title: "still broken",
         })
         .end(function (err, res) {
           assert.equal(res.status, 200);
           assert.equal(res.body.result, "successfully updated");
-          assert.equal(res.body._id, "63fd79b5e81ab019dcdf8bad");
+          assert.equal(res.body._id, "63fd8b5800b8c65e226b50ad");
           done();
         });
     });
@@ -137,14 +137,14 @@ suite("PUT Tests", function () {
           .request(server)
           .put("/api/issues/apitest")
           .send({
-            _id: "63fd79b5e81ab019dcdf8bad",
+            _id: "63fd8b5800b8c65e226b50ad",
             issue_title: "fixing but broke",
             issue_text: "site is broken",
           })
           .end(function (err, res) {
             assert.equal(res.status, 200);
             assert.equal(res.body.result, "successfully updated");
-            assert.equal(res.body._id, "63fd79b5e81ab019dcdf8bad");
+            assert.equal(res.body._id, "63fd8b5800b8c65e226b50ad");
             done();
           });
       });
@@ -169,7 +169,7 @@ suite("PUT Tests", function () {
           .request(server)
           .put("/api/issues/apitest")
           .send({
-            _id: "63fd79b5e81ab019dcdf8bad",
+            _id: "63fd8b5800b8c65e226b50ad",
           })
           .end(function (err, res) {
             assert.equal(res.status, 200);
