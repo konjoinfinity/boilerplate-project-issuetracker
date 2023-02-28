@@ -96,8 +96,26 @@ module.exports = function (app) {
     
     .put(function (req, res){
       let project = req.params.project;
-      
-    })
+      let id = req.body._id
+        // console.log(req.body);
+        ProjectModel.aggregate([
+          { $match: { name: project } },
+          { $unwind: "$issues" },
+          { $match: { "issues._id": ObjectId(id) } },
+          { $set: {    
+            issue_title: req.body.issue_title,
+            issue_text: req.body.issue_text,
+            created_by: req.body.created_by,
+            assigned_to: req.body.assigned_to,
+            open: req.body.open,
+            status_text: req.body.status_text 
+          } }
+        ]).then((err, update) => {
+            if(err) {console.log(err)}
+            console.log(update)
+            res.json(update);
+          })
+      })
     
     .delete(function (req, res){
       let project = req.params.project;
