@@ -148,24 +148,31 @@ module.exports = function (app) {
       });
     })
 
-    
-    .delete(function (req, res){
+    .delete(function (req, res) {
       let project = req.params.project;
-      console.log(req.body._id)
-      console.log(String(req.body._id).length)
-      if(String(req.body._id).length == 24) {
-      ProjectModel.findOneAndUpdate({ name: project },{ $pull: { issues: { _id: req.body._id } } })
-       .then((issue, err) => {
-        if (err) {
-          res.json({ error: 'could not delete', '_id': req.body._id })
-        } else {
-        issue.save((err, deleted) => {
-            res.json({ result: 'successfully deleted', '_id': req.body._id });
-        });
+      const { _id } = req.body;
+      if (!_id) {
+        res.json({ error: "missing _id" });
+        return;
       }
+      ProjectModel.findOne({ name: project }, (err, projectdata) => {
+        if (!projectdata || err) {
+          res.send({ error: "could not delete", _id: _id });
+        } else {
+          const issueData = projectdata.issues.id(_id);
+          if (!issueData) {
+            res.send({ error: "could not delete", _id: _id });
+            return;
+          }
+          issueData.remove();
+          projectdata.save((err, data) => {
+            if (err || !data) {
+              res.json({ error: "could not delete", _id: issueData._id });
+            } else {
+              res.json({ result: "successfully deleted", _id: issueData._id });
+            }
+          });
+        }
       });
-    } else {
-      res.json({ error: 'missing _id' })
-    }
     });
 };
